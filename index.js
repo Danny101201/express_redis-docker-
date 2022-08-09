@@ -1,38 +1,35 @@
 const express = require('express')
 const app = express();
-const cors  = require('cors')
+const cors = require('cors')
 const redis = require('redis');
 require('dotenv').config()
 
 const client = redis.createClient({
-    socket: {
-      host: '127.0.0.1',
-      port: '6379'
-    }
+  socket: {
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT
+  }
 });
-const PORT = process.env.PORT ||3002
 
 // json
 app.use(express.json())
 // cors
 app.use(cors())
 
-app.get('/text',(req,res)=>{
-  res.json('Hello world')
+app.get('/text', async (req, res) => {
+  return res.json('Hello world')
 })
 
-app.post('/setName',(req, res) => {
+app.post('/setName', async (req, res) => {
   const { key, userName } = req.body
   if (!key || !userName) {
-    res.json('key or userName is Empty')
+    return res.json('key or userName is Empty')
   }
-  if (key && userName) {
-    client.set(key, userName)
-    res.json('sucess add NewUser')
-  }
+  client.set(key, userName)
+  return res.json('sucess add NewUser')
 })
 
-app.listen(PORT, async () => {
+app.listen(process.env.PORT || 3001, async () => {
   await client.connect();
-  console.log(`server run on port : ${PORT}`)
+  console.log(`server run on port : ${process.env.PORT || 3001}`)
 })

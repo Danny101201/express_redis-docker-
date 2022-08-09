@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: my-node-sample
+    image: my-node-sample:v0.0.1
+    restart: always
+    ports:
+      - 3001:3001
+    volumes:
+      - ./.env:/app/.env
+
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
